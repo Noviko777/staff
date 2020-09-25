@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loading_more_list/loading_more_list.dart';
 import 'package:scroll_app_bar/scroll_app_bar.dart';
 import 'package:staff/my_staff_icons_icons.dart';
 
@@ -52,16 +53,7 @@ class _CatalogPageState extends State<CatalogPage>
           body: TabBarView(
             children: [
               Icon(Icons.directions_car),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Flexible(
-                    flex: 1,
-                    child: CategoryView()
-                  ),
-                  Flexible(flex: 13, child: CatalogView(controller)),
-                ],
-              ),
+              CatalogView(controller),
             ],
           ),
         ),
@@ -91,8 +83,83 @@ class _CatalogPageState extends State<CatalogPage>
     );
   }
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return DefaultTabController(
+  //     length: 2,
+  //     child: Scaffold(
+  //       backgroundColor: Colors.white,
+  //       body: LoadingMoreCustomScrollView(slivers: [
+  //         new SliverAppBar(
+  //           pinned: true,
+  //           backgroundColor: Colors.white,
+  //           centerTitle: true,
+  //           title: Image.asset('assets/images/logo.png',
+  //               height: 40, fit: BoxFit.cover),
+  //           bottom: new TabBar(
+  //             labelColor: Color(0xFF222222),
+  //             indicatorColor: Color(0xFF222222),
+  //             indicatorWeight: 2.0,
+  //             tabs: <Tab>[
+  //               new Tab(text: "СКИДКИ"),
+  //               new Tab(text: "КАТАЛОГ"),
+  //             ],
+  //           ),
+  //         ),
+  //         SliverPersistentHeader(),
+  //         SliverToBoxAdapter(
+  //           child: Container(
+  //             alignment: Alignment.center,
+  //             child: TabBarView(
+  //               children: [
+  //                 Icon(Icons.directions_car),
+  //                 Icon(Icons.directions_car),
+  //               ],
+  //             ),
+  //             height: 300,
+  //           ),
+  //         ),
+  //         // SliverToBoxAdapter(
+  //         //   child: TabBarView(
+  //         //     children: [
+  //         //       Icon(Icons.directions_car),
+  //         //       Column(
+  //         //         mainAxisAlignment: MainAxisAlignment.start,
+  //         //         children: [
+  //         //           Flexible(flex: 1, child: CategoryView()),
+  //         //           Flexible(flex: 13, child: CatalogView(controller)),
+  //         //         ],
+  //         //       ),
+  //         //     ],
+  //         //   ),
+  //         // )
+  //       ]),
+  //       bottomNavigationBar: BottomNavigationBar(
+  //         type: BottomNavigationBarType.fixed,
+  //         selectedItemColor: Color(0xFF272727),
+  //         unselectedItemColor: Color(0xFF898989),
+  //         selectedFontSize: 10.0,
+  //         unselectedFontSize: 10.0,
+  //         currentIndex: _bottomNavIndex,
+  //         onTap: (int index) {
+  //           setState(() {
+  //             _bottomNavIndex = index;
+  //           });
+  //         },
+  //         items: allDestinations.map((Destination destination) {
+  //           return BottomNavigationBarItem(
+  //               icon: Icon(destination.icon),
+  //               backgroundColor: Color(0xFFEEEEEE),
+  //               title: Padding(
+  //                 padding: const EdgeInsets.only(top: 8.0),
+  //                 child: Text(destination.title),
+  //               ));
+  //         }).toList(),
+  //       ),
+  //     ),
+  //   );
+  // }
 }
-
 
 class Destination {
   const Destination(this.title, this.icon, this.color);
@@ -123,16 +190,27 @@ class CatalogViewState extends State<CatalogView> {
 
   CatalogViewState(this.controller);
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return ListView.builder(
+  //       itemCount: 100,
+  //       itemBuilder: (context, index) {
+  //         return Container(
+  //           height: 50,
+  //           color: (index % 2 == 0) ? Colors.red : Colors.blue,
+  //         );
+  //       });
+  // }
+
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: 100,
-        itemBuilder: (context, index) {
-          return Container(
-            height: 50,
-            color: (index % 2 == 0) ? Colors.red : Colors.blue,
-          );
-        });
+    return SliverList(
+        delegate: SliverChildListDelegate([
+      Container(
+        height: 100,
+        color: Colors.green,
+      ),
+    ]));
   }
 }
 
