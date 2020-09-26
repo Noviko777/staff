@@ -24,7 +24,7 @@ class CategoryView extends StatelessWidget {
                       Icon(Icons.keyboard_arrow_right)
                     ],
                   ),
-                )
+                ),
               ],
             ))
       ],

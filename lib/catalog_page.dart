@@ -126,7 +126,7 @@ class _CatalogPageState extends State<CatalogPage>
               SliverPersistentHeader(
                 delegate: CategoryHeader(),
                 pinned: true,
-              )
+              ),
             ];
           },
           body: TabBarView(

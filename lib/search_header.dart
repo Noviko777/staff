@@ -9,17 +9,30 @@ class SearchHeader extends SliverPersistentHeaderDelegate {
     return LayoutBuilder(builder: (context, constraints) {
       return Container(
         height: constraints.maxHeight,
-        color: Colors.red,
+        decoration: BoxDecoration(color: Color(0xFFEEEEEE)),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.circular(20.0)),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                children: [],
+              ),
+            ),
+          ),
+        ),
       );
     });
   }
 
   @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate _) => true;
+  bool shouldRebuild(SliverPersistentHeaderDelegate _) => false;
 
   @override
-  double get maxExtent => 50.0;
+  double get maxExtent => 60.0;
 
   @override
-  double get minExtent => 50.0;
+  double get minExtent => 60.0;
 }

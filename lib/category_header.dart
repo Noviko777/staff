@@ -9,7 +9,14 @@ class CategoryHeader extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return LayoutBuilder(builder: (context, constraints) {
-      return Container(height: constraints.maxHeight, child: CategoryView());
+      return Container(
+          height: constraints.maxHeight,
+          child: CategoryView(),
+          decoration: BoxDecoration(
+            border: Border(
+                bottom: BorderSide(
+                    color: Theme.of(context).hintColor.withOpacity(0.15))),
+          ));
     });
   }
 
