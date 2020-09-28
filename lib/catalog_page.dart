@@ -91,6 +91,10 @@ class _CatalogPageState extends State<CatalogPage>
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+
+    /*24 is for notification bar on Android*/
+    final double itemHeight = (size.height) / 2;
     return DefaultTabController(
       length: 2,
       child: Scaffold(
