@@ -1,49 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:hasura_connect/hasura_connect.dart';
 import 'package:loading_more_list/loading_more_list.dart';
+import 'package:provider/provider.dart';
+import 'package:staff/model/cloth_item.dart';
 import 'package:staff/search_header.dart';
 
-class ClothesRepository extends LoadingMoreBase<String> {
-  int pageindex = 1;
-  bool _hasMore = true;
-  bool forceRefresh = false;
-  @override
-  bool get hasMore => (_hasMore && length < 30) || forceRefresh;
+import 'common/queries.dart';
 
-  @override
-  Future<bool> refresh([bool clearBeforeRequest = false]) async {
-    _hasMore = true;
-    pageindex = 1;
-    //force to refresh list when you don't want clear list before request
-    //for the case, if your list already has 20 items.
-    forceRefresh = !clearBeforeRequest;
-    var result = await super.refresh(clearBeforeRequest);
-    forceRefresh = false;
-    return result;
+// TODO: Реализовать картинку-заглушку, если у эелмента нет ссылки на картинку, либо она не доступна
+
+class ClothesProvider extends ChangeNotifier {
+  static const String _url = 'https://beloved-hog-29.hasura.app/v1/graphql';
+  HasuraConnect _hasuraConnect = HasuraConnect(_url);
+
+  List<ClothItem> clothItemList = List<ClothItem>();
+
+  ClothesProvider() {
+    loadItems().then((value) async {
+      await setItems(value);
+    });
   }
 
-  @override
-  Future<bool> loadData([bool isloadMoreAction = false]) {
-    return Future.value(true);
+  Future<void> setItems(Map<String, dynamic> json) async {
+    var data = json['data'];
+    var usersJson = data['cloth_items'] as List;
+
+    List<ClothItem> list = usersJson.map((e) => ClothItem.fromJson(e)).toList();
+    clothItemList = list;
+    notifyListeners();
+  }
+
+  Future<dynamic> loadItems() {
+    return _hasuraConnect.query(clothItemsQuery);
   }
 }
 
 class CatalogView extends StatefulWidget {
-  CatalogView();
+  final ClothesProvider clothesProvider;
+
+  CatalogView(this.clothesProvider);
 
   @override
   CatalogViewState createState() => CatalogViewState();
 }
 
 class CatalogViewState extends State<CatalogView> {
-  ClothesRepository repository = ClothesRepository();
-
-  CatalogViewState() {
-    repository.add("sadasd");
-    repository.add("sadasd");
-    repository.add("sadasd");
-    repository.add("sadasd");
-  }
+  CatalogViewState() {}
 
   @override
   Widget build(BuildContext context) {
@@ -88,12 +91,15 @@ class CatalogViewState extends State<CatalogView> {
                           child: Image.network(
                               "https://static.staff-clothes.com/uploads/media/image_product/0001/56/b379957beda34f03af94f243d08d7130.jpeg"),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4.0),
-                          child: Text(
-                            "Кроссовки Staff black & navy & orange",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w300, fontSize: 12.0),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: Text(
+                              widget.clothesProvider.clothItemList[index].name,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w300, fontSize: 12.0),
+                            ),
                           ),
                         ),
                         Align(
@@ -101,7 +107,7 @@ class CatalogViewState extends State<CatalogView> {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(vertical: 0.0),
                             child: Text(
-                              "40, 41, 42, 43",
+                              widget.clothesProvider.clothItemList[index].sizes,
                               style: TextStyle(
                                   fontWeight: FontWeight.w400,
                                   fontSize: 12.0,
@@ -114,7 +120,7 @@ class CatalogViewState extends State<CatalogView> {
                           child: Padding(
                             padding: const EdgeInsets.only(top: 4.0),
                             child: Text(
-                              "260 грн.",
+                              "${widget.clothesProvider.clothItemList[index].cost} грн.",
                               style: TextStyle(
                                   fontWeight: FontWeight.w400,
                                   fontSize: 14.0,
@@ -125,7 +131,7 @@ class CatalogViewState extends State<CatalogView> {
                       ]),
                 );
               },
-              childCount: 20,
+              childCount: widget.clothesProvider.clothItemList.length,
             ),
           ),
         )

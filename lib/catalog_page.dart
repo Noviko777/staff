@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loading_more_list/loading_more_list.dart';
+import 'package:provider/provider.dart';
 import 'package:scroll_app_bar/scroll_app_bar.dart';
 import 'package:staff/my_staff_icons_icons.dart';
 
@@ -97,67 +98,80 @@ class _CatalogPageState extends State<CatalogPage>
     final double itemHeight = (size.height) / 2;
     return DefaultTabController(
       length: 2,
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: NestedScrollView(
-          controller: controller,
-          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-            return <Widget>[
-              new SliverAppBar(
-                elevation: 0.0,
-                backgroundColor: Colors.white,
-                centerTitle: true,
-                title: Image.asset('assets/images/logo.png',
-                    height: 40, fit: BoxFit.cover),
-                pinned: true,
-                floating: true,
-                bottom: new TabBar(
-                  labelColor: Color(0xFF222222),
-                  indicatorColor: Color(0xFF222222),
-                  indicatorWeight: 2.5,
-                  labelStyle: TextStyle(
-                      color: Colors.black,
-                      fontFamily: "Ubuntu",
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 1.0,
-                      fontSize: 13.0),
-                  tabs: <Tab>[
-                    new Tab(text: "СКИДКИ"),
-                    new Tab(text: "КАТАЛОГ"),
-                  ],
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.white,
+          body: NestedScrollView(
+            controller: controller,
+            headerSliverBuilder:
+                (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                new SliverAppBar(
+                  elevation: 0.0,
+                  backgroundColor: Colors.white,
+                  centerTitle: true,
+                  title: Image.asset('assets/images/logo.png',
+                      height: 40, fit: BoxFit.cover),
+                  pinned: true,
+                  floating: true,
+                  bottom: new TabBar(
+                    labelColor: Color(0xFF222222),
+                    indicatorColor: Color(0xFF222222),
+                    indicatorWeight: 2.5,
+                    labelStyle: TextStyle(
+                        color: Colors.black,
+                        fontFamily: "Ubuntu",
+                        fontWeight: FontWeight.w400,
+                        letterSpacing: 1.0,
+                        fontSize: 13.0),
+                    tabs: <Tab>[
+                      new Tab(text: "СКИДКИ"),
+                      new Tab(text: "КАТАЛОГ"),
+                    ],
+                  ),
                 ),
+                SliverPersistentHeader(
+                  delegate: CategoryHeader(),
+                  pinned: true,
+                ),
+              ];
+            },
+            body: MultiProvider(
+              providers: [
+                ChangeNotifierProvider.value(value: ClothesProvider())
+              ],
+              child: TabBarView(
+                children: [
+                  Icon(Icons.camera),
+                  Consumer<ClothesProvider>(builder: (context, value, child) {
+                    return CatalogView(value);
+                  })
+                ],
               ),
-              SliverPersistentHeader(
-                delegate: CategoryHeader(),
-                pinned: true,
-              ),
-            ];
-          },
-          body: TabBarView(
-            children: [Icon(Icons.camera), CatalogView()],
+            ),
           ),
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: Color(0xFF272727),
-          unselectedItemColor: Color(0xFF898989),
-          selectedFontSize: 10.0,
-          unselectedFontSize: 10.0,
-          currentIndex: _bottomNavIndex,
-          onTap: (int index) {
-            setState(() {
-              _bottomNavIndex = index;
-            });
-          },
-          items: allDestinations.map((Destination destination) {
-            return BottomNavigationBarItem(
-                icon: Icon(destination.icon),
-                backgroundColor: Color(0xFFEEEEEE),
-                title: Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(destination.title),
-                ));
-          }).toList(),
+          bottomNavigationBar: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            selectedItemColor: Color(0xFF272727),
+            unselectedItemColor: Color(0xFF898989),
+            selectedFontSize: 10.0,
+            unselectedFontSize: 10.0,
+            currentIndex: _bottomNavIndex,
+            onTap: (int index) {
+              setState(() {
+                _bottomNavIndex = index;
+              });
+            },
+            items: allDestinations.map((Destination destination) {
+              return BottomNavigationBarItem(
+                  icon: Icon(destination.icon),
+                  backgroundColor: Color(0xFFEEEEEE),
+                  title: Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(destination.title),
+                  ));
+            }).toList(),
+          ),
         ),
       ),
     );
